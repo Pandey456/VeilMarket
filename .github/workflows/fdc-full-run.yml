@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fdc:
+  run:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,8 +14,10 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm install
+      - name: Install Dependencies
+        run: npm install viem
 
-      - run: node fdc-run.js
+      - name: Run FDC
+        run: node veilmarket-tee/fdc-run.js
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
