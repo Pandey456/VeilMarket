@@ -174,9 +174,9 @@ async function main() {
   const roundId = await submitRequest(abiEncodedRequest); // Step 2
   await waitForFinalization(180); // Step 3
   const proof = await getProof(roundId, abiEncodedRequest); // Step 4
-  console.log("ALL DONE — full proof:", JSON.stringify(proof, null, 2));
-  console.log("PROOF KEYS:", Object.keys(proof));
-  console.log("PROOF DATA:", JSON.stringify(proof, null, 2));
+  const encodedPrice = proof.response.responseBody.abiEncodedData;
+  const price = BigInt(encodedPrice) / 100000000n;
+  console.log("SOL Price:", price.toString());
   //added xtra
   return proof;
 }
