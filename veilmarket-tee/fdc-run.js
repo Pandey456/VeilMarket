@@ -175,7 +175,8 @@ async function main() {
   await waitForFinalization(180); // Step 3
   const proof = await getProof(roundId, abiEncodedRequest); // Step 4
   console.log("ALL DONE — full proof:", JSON.stringify(proof, null, 2));
-  console.log("SOL Price:", proof.proof);
+  console.log("PROOF KEYS:", Object.keys(proof));
+  console.log("PROOF DATA:", JSON.stringify(proof, null, 2));
   //added xtra
   return proof;
 }
