@@ -13,28 +13,20 @@ const account = privateKeyToAccount(process.env.PRIVATE_KEY);
 const publicClient = createPublicClient({ transport: http(RPC_URL) });
 const walletClient = createWalletClient({ account, transport: http(RPC_URL) });
 async function prepareRequest() {
-  // const body = {
-  //   attestationType: toBytes32("Web2Json"),
-  //   sourceId: toBytes32("PublicWeb2"),
-  //   requestBody: {
-  //     url: "https://jsonplaceholder.typicode.com/todos/1",
-  //     httpMethod: "GET",
-  //     headers: "{}",
-  //     queryParams: "{}",
-  //     body: "{}",
-  //     postProcessJq: ".completed",
-  //     abiSignature: "bool",
-  //   },
-  // };
-
   // const requestBody = {
-  //   url: "https://api.coinbase.com/v2/prices/BTC-USD/spot",
+  //   url: "https://data-api.binance.vision/api/v3/klines",
   //   httpMethod: "GET",
   //   headers: "{}",
-  //   queryParams: "{}",
+  //   queryParams: JSON.stringify({
+  //     symbol: "BTCUSDT",
+  //     interval: "1m",
+  //     startTime: process.env.MARKET_DEADLINE_MS,
+  //     //startTime: "1710000000000",
+  //     limit: "1",
+  //   }),
   //   body: "{}",
   //   postProcessJq:
-  //     '{ price: ((.data.amount | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
+  //     '{ price: ((.[0][4] | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
   //   abiSignature: JSON.stringify({
   //     type: "tuple",
   //     components: [
@@ -45,28 +37,27 @@ async function prepareRequest() {
   //     ],
   //   }),
   // };
+  const tokenPairs = {
+    BTC: "BTC-USD",
+    ETH: "ETH-USD",
+    SOL: "SOL-USD",
+  };
+
+  const selectedToken = "SOL";
+
   const requestBody = {
-    url: "https://data-api.binance.vision/api/v3/klines",
+    url: `https://api.coinbase.com/v2/prices/${tokenPairs[selectedToken]}/spot`,
     httpMethod: "GET",
     headers: "{}",
-    queryParams: JSON.stringify({
-      symbol: "BTCUSDT",
-      interval: "1m",
-      startTime: process.env.MARKET_DEADLINE_MS,
-      //startTime: "1710000000000",
-      limit: "1",
-    }),
+    queryParams: "{}",
     body: "{}",
+
     postProcessJq:
-      '{ price: ((.[0][4] | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
+      '{ price: ((.data.amount | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
+
     abiSignature: JSON.stringify({
       type: "tuple",
-      components: [
-        {
-          name: "price",
-          type: "uint256",
-        },
-      ],
+      components: [{ name: "price", type: "uint256" }],
     }),
   };
 
@@ -207,6 +198,7 @@ async function main() {
   await waitForFinalization(180); // Step 3
   const proof = await getProof(roundId, abiEncodedRequest); // Step 4
   console.log("ALL DONE — full proof:", JSON.stringify(proof, null, 2));
+  console.log("SOL Price:", proof.proof);
   //added xtra
   return proof;
 }
