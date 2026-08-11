@@ -13,51 +13,28 @@ const account = privateKeyToAccount(process.env.PRIVATE_KEY);
 const publicClient = createPublicClient({ transport: http(RPC_URL) });
 const walletClient = createWalletClient({ account, transport: http(RPC_URL) });
 async function prepareRequest() {
-  // const requestBody = {
-  //   url: "https://data-api.binance.vision/api/v3/klines",
-  //   httpMethod: "GET",
-  //   headers: "{}",
-  //   queryParams: JSON.stringify({
-  //     symbol: "BTCUSDT",
-  //     interval: "1m",
-  //     startTime: process.env.MARKET_DEADLINE_MS,
-  //     //startTime: "1710000000000",
-  //     limit: "1",
-  //   }),
-  //   body: "{}",
-  //   postProcessJq:
-  //     '{ price: ((.[0][4] | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
-  //   abiSignature: JSON.stringify({
-  //     type: "tuple",
-  //     components: [
-  //       {
-  //         name: "price",
-  //         type: "uint256",
-  //       },
-  //     ],
-  //   }),
-  // };
-  const tokenPairs = {
-    BTC: "BTC-USD",
-    ETH: "ETH-USD",
-    SOL: "SOL-USD",
-  };
-
-  const selectedToken = "SOL";
-
   const requestBody = {
-    url: `https://api.coinbase.com/v2/prices/${tokenPairs[selectedToken]}/spot`,
+    url: "https://data-api.binance.vision/api/v3/klines",
     httpMethod: "GET",
     headers: "{}",
-    queryParams: "{}",
+    queryParams: JSON.stringify({
+      symbol: "SOLUSDT",
+      interval: "1m",
+      //startTime: process.env.MARKET_DEADLINE_MS,
+      startTime: "1710000000000",
+      limit: "1",
+    }),
     body: "{}",
-
     postProcessJq:
-      '{ price: ((.data.amount | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
-
+      '{ price: ((.[0][4] | tonumber) * 100000000 | tostring | split(".")[0] | tonumber) }',
     abiSignature: JSON.stringify({
       type: "tuple",
-      components: [{ name: "price", type: "uint256" }],
+      components: [
+        {
+          name: "price",
+          type: "uint256",
+        },
+      ],
     }),
   };
 
