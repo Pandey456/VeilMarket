@@ -21,7 +21,7 @@ async function prepareRequest() {
       symbol: "SOLUSDT",
       interval: "1m",
       //startTime: process.env.MARKET_DEADLINE_MS,
-      startTime: "1786470480000",
+      startTime: "1767245400000",
       limit: "1",
     }),
     body: "{}",
